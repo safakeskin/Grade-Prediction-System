@@ -99,7 +99,7 @@ INSERT INTO `GradePrediction`.`Person`
 `lastName`,
 `studentId`)
 VALUES
-("Aziz", "Cetin", 150160015);
+("Aziz", "Cetin", 150160515);
 
 
 INSERT INTO `GradePrediction`.`Lecture`
