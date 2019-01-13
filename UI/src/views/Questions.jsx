@@ -79,7 +79,7 @@ class Question extends React.Component {
 		).then(data => {
             if (data.success) {
 				this.setState({lectureName: data.lecture, crn: data.crn})
-				console.log("lecture is ", data.lecture);
+				// console.log("lecture is ", data.lecture);
                 return data.lecture;
 			}
 			else {
@@ -98,7 +98,7 @@ class Question extends React.Component {
 		).then(data => {
             if (data.success) {
 				this.setState({examName: data.exam})
-				console.log("exam is ", data.exam);
+				// console.log("exam is ", data.exam);
                 return data.exam;
 			}
 			else {
@@ -116,6 +116,7 @@ class Question extends React.Component {
 		}).then((response) => response.json()
 		).then(data => {
             if (data.success) {
+				this.setState({maxQuestionNumber: data.count});
                 return data.count;
 			}
 			else {
@@ -135,7 +136,7 @@ class Question extends React.Component {
 		).then(data => {
             if (data.success) {
 				this.setState({question: data.question})
-				console.log("question is ", data.question);
+				// console.log("question is ", data.question);
 			}
 			else {
                 console.log("Error (SelectQuestion)", data.message)
@@ -155,24 +156,26 @@ class Question extends React.Component {
 		var questionNo = this.state.questionNumber;
 		// var max = this.FindQuestionNumber(lecture, exam);
 		var max = this.state.maxQuestionNumber;
-
 		var qNo = questionNo + num;
+
 		if (qNo >= 1 && qNo <= max){
 			this.SelectQuestion(lecture, exam, qNo);
+			this.setState({questionNumber: qNo});
 		}
 	}
 
 	render() {
 		const { classes } = this.props;
 		let prevButtonShow, nextButtonShow;
-		if (this.state.questionNo >= 1){
+		// prevButtonShow = true, nextButtonShow = true;
+		if (this.state.questionNumber > 1){
 			prevButtonShow = true;
 		}
 		else{
 			prevButtonShow = false;
 		}
 
-		if (this.state.questionNo <= this.state.maxQuestionNumber){
+		if (this.state.questionNumber < this.state.maxQuestionNumber){
 			nextButtonShow = true;
 		}
 		else{
