@@ -1,6 +1,11 @@
 CREATE DATABASE GradePrediction;
 USE GradePrediction;
 
+CREATE USER 'GradePredictor'@'localhost' IDENTIFIED BY '456';
+GRANT ALL PRIVILEGES ON * . * TO 'GradePredictor'@'localhost';
+flush privileges;
+
+
 CREATE TABLE Person (
 id INT AUTO_INCREMENT NOT NULL,
 firstName VARCHAR(15) NOT NULL,

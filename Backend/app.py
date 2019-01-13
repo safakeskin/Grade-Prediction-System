@@ -8,8 +8,8 @@ from flask_cors import CORS
 mysql = MySQL()
 app = Flask(__name__)
 CORS(app)
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
+app.config['MYSQL_DATABASE_USER'] = 'GradePredictor'
+app.config['MYSQL_DATABASE_PASSWORD'] = '456'
 app.config['MYSQL_DATABASE_DB'] = 'GradePrediction'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
