@@ -19,8 +19,8 @@ import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import Muted from "components/Typography/Muted.jsx";
 
+import {BACKEND_HOST} from "variables/general"
 
-const BACKEND_HOST = "http://localhost:5000"
 
 const styles = {
 	cardCategoryWhite: {
@@ -75,13 +75,15 @@ class Question extends React.Component {
 		fetch(BACKEND_HOST + "/lecture/" + lecture, {
 			method: 'GET',
 			headers: { 'Content-Type': 'application/json' },
-		}).then(data => {
+		}).then((response) => response.json()
+		).then(data => {
             if (data.success) {
 				this.setState({lectureName: data.lecture, crn: data.crn})
+				console.log("lecture is ", data.lecture);
                 return data.lecture;
 			}
 			else {
-                console.log(data.message)
+                console.log("Error (GetLectureName)", data.message)
             }
         }).catch(err => {
             console.log(String(err));
@@ -92,13 +94,15 @@ class Question extends React.Component {
 		fetch(BACKEND_HOST + "/exam/" + exam, {
 			method: 'GET',
 			headers: { 'Content-Type': 'application/json' },
-		}).then(data => {
+		}).then((response) => response.json()
+		).then(data => {
             if (data.success) {
-				this.setState({lectureName: data.exam})
+				this.setState({examName: data.exam})
+				console.log("exam is ", data.exam);
                 return data.exam;
 			}
 			else {
-                console.log(data.message)
+                console.log("Error (GetExamName)", data.message)
             }
         }).catch(err => {
             console.log(String(err));
@@ -109,12 +113,13 @@ class Question extends React.Component {
 		fetch(BACKEND_HOST + "/question/count/" + lecture + "/" + exam, {
 			method: 'GET',
 			headers: { 'Content-Type': 'application/json' },
-		}).then(data => {
+		}).then((response) => response.json()
+		).then(data => {
             if (data.success) {
                 return data.count;
 			}
 			else {
-                console.log(data.message)
+                console.log("Error (FindQuestionNumber)", data.message)
             }
         }).catch(err => {
             console.log(String(err));
@@ -126,12 +131,14 @@ class Question extends React.Component {
 		fetch(BACKEND_HOST + "/question/select/" + lecture + "/" + exam + "/" + questionNo, {
 			method: 'GET',
 			headers: { 'Content-Type': 'application/json' },
-		}).then(data => {
+		}).then((response) => response.json()
+		).then(data => {
             if (data.success) {
-                this.setState({question: data.question})
+				this.setState({question: data.question})
+				console.log("question is ", data.question);
 			}
 			else {
-                console.log(data.message)
+                console.log("Error (SelectQuestion)", data.message)
             }
         }).catch(err => {
             console.log(String(err));
@@ -178,7 +185,7 @@ class Question extends React.Component {
 					<GridItem xs={12} sm={12} md={8}>
 						<Card>
 							<CardHeader color="primary">
-								<h4 className={classes.cardTitleWhite}>{this.state.lectureName} - {this.state.examName} - </h4>
+								<h4 className={classes.cardTitleWhite}>{this.state.lectureName} {this.state.examName} </h4>
 								<p className={classes.cardCategoryWhite}>Fill in the blanks</p>
 							</CardHeader>
 							<CardBody>
