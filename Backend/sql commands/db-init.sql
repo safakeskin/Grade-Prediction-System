@@ -36,6 +36,7 @@ CREATE TABLE Exam (
 id INT AUTO_INCREMENT NOT NULL,
 lecture INT NOT NULL,
 examType INT NOT NULL,
+isActive BOOLEAN NOT NULL,
 
 UNIQUE (lecture, examType),
 
@@ -181,15 +182,17 @@ VALUES
 
 INSERT INTO `GradePrediction`.`Exam`
 (`lecture`,
-`examType`)
+`examType`,
+`isActive`)
 VALUES
-(1, 1);
+(1, 1, 1);
 
 INSERT INTO `GradePrediction`.`Exam`
 (`lecture`,
-`examType`)
+`examType`,
+`isActive`)
 VALUES
-(1, 2);
+(1, 2, 1);
 
 
 INSERT INTO `GradePrediction`.`Question`
