@@ -193,6 +193,30 @@ def SelectQuestion(lecture_id, exam_id, question_no):
         resp = jsonify({"success": False, "message": e})
         return resp
 
+@app.route('/answer/submit/<question_id>/<student_id>/<content>', methods=['POST', 'OPTIONS'])
+def SubmitAnswer(question_id, student_id, content):
+    try:
+        success, q_id = ExistAnswer(question_id, student_id)
+        if (not success):
+            cursor = db.cursor()
+            query = "INSERT INTO Answer (question, student, content) VALUES (%s, %s, %s)"
+            cursor.execute(query, (question_id, student_id, content))
+            db.commit()
+            resp = jsonify({'success': True})
+            resp.status_code = 200
+            return resp
+        else:
+            cursor = db.cursor()
+            query = "UPDATE Answer SET content = %s WHERE id = %s"
+            cursor.execute(query, (content, q_id))
+            db.commit()
+            resp = jsonify({'success': True})
+            resp.status_code = 200
+            return resp
+    except Exception as e: 
+        resp = jsonify({"success": False, "message": e})
+        return resp   
+
 @app.route('/person/create/<first_name>/<last_name>/<student_id>', methods=['POST', 'OPTIONS'])
 def CreatePerson(first_name, last_name, student_id):
     try:
@@ -411,5 +435,17 @@ def isAddedStudent(lecture_id, student_id):
     except:
         return False
 
+def ExistAnswer(question_id, student_id):
+    try:
+        cursor = db.cursor()
+        query = "SELECT id FROM Answer WHERE (question = %s AND student = %s)"
+        cursor.execute(query, (question_id, student_id))
+        data = cursor.fetchall()
+        if (data):
+            return True, data
+        else:
+            return False, 0
+    except:
+        return False, 0
 if __name__ == '__main__':
     app.run(debug=True, host=BACKEND_HOST, port=BACKEND_PORT)

@@ -107,6 +107,8 @@ question INT NOT NULL,
 student INT NOT NULL,
 content VARCHAR(500) NOT NULL,
 
+UNIQUE (question, student),
+
 PRIMARY KEY (id),
 
 FOREIGN KEY (question) REFERENCES Question(id)
