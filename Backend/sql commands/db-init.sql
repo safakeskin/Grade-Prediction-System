@@ -15,14 +15,26 @@ PRIMARY KEY (id),
 UNIQUE (firstName, lastName, studentId)
 )ENGINE=INNODB;
 
+CREATE TABLE Semester(
+id INT AUTO_INCREMENT NOT NULL,
+term VARCHAR(10) NOT NULL UNIQUE,
+PRIMARY KEY (id)
+)ENGINE=INNODB;
+
 CREATE TABLE Lecture (
 id INT AUTO_INCREMENT NOT NULL,
 crn INT NOT NULL,
 lectureName VARCHAR(30) NOT NULL,
-semester DATETIME NOT NULL,
-UNIQUE (crn, semester),
-UNIQUE (lectureName, semester),
-PRIMARY KEY (id)
+semester INT NOT NULL,
+year YEAR(4) NOT NULL,
+
+UNIQUE (crn, semester, year),
+UNIQUE (lectureName, semester, year),
+
+PRIMARY KEY (id),
+
+FOREIGN KEY (semester) REFERENCES Semester (id)
+ON UPDATE CASCADE ON DELETE CASCADE
 )ENGINE=INNODB;
 
 CREATE TABLE LectureStudent (
@@ -120,13 +132,28 @@ INSERT INTO `GradePrediction`.`Person`
 VALUES
 ("Aziz", "Cetin", 150160515);
 
+INSERT INTO `GradePrediction`.`Semester`
+(`term`)
+VALUES
+("Spring");
+
+INSERT INTO `GradePrediction`.`Semester`
+(`term`)
+VALUES
+("Summer");
+
+INSERT INTO `GradePrediction`.`Semester`
+(`term`)
+VALUES
+("Fall");
 
 INSERT INTO `GradePrediction`.`Lecture`
 (`crn`,
 `lectureName`,
-`semester`)
+`semester`,
+`year`)
 VALUES
-(10984, "Analysis of Algorithms I", "2018-09-01");
+(10984, "Analysis of Algorithms I", "1", "2018");
 
 INSERT INTO `GradePrediction`.`LectureStudent`
 (`student`,
