@@ -25,11 +25,27 @@ UNIQUE (lectureName, semester),
 PRIMARY KEY (id)
 )ENGINE=INNODB;
 
+CREATE TABLE LectureStudent (
+id INT AUTO_INCREMENT NOT NULL,
+lecture INT NOT NULL,
+student INT NOT NULL,
+
+UNIQUE (lecture, student),
+
+PRIMARY KEY (id),
+
+FOREIGN KEY (lecture) REFERENCES Lecture (id) 
+ON UPDATE CASCADE ON DELETE CASCADE,
+
+FOREIGN KEY (student) REFERENCES Person (id)
+ON UPDATE CASCADE ON DELETE CASCADE
+)ENGINE=INNODB;
+
 CREATE TABLE ExamType (
 id INT AUTO_INCREMENT NOT NULL,
 examType VARCHAR(15) NOT NULL UNIQUE,
 PRIMARY KEY (id)
- )ENGINE=INNODB;
+)ENGINE=INNODB;
 
 
 CREATE TABLE Exam (
@@ -47,7 +63,6 @@ ON UPDATE CASCADE ON DELETE CASCADE,
 
 FOREIGN KEY (examType) REFERENCES ExamType (id) 
 ON UPDATE CASCADE ON DELETE CASCADE
-
 )ENGINE=INNODB;
 
 
@@ -58,16 +73,15 @@ exam INT NOT NULL,
 questionNo INT,
 question VARCHAR(300) NOT NULL,
 
+UNIQUE (lecture, exam, questionNo),
+
 PRIMARY KEY (id),
 
 FOREIGN KEY (lecture) REFERENCES Lecture (id) 
 ON UPDATE CASCADE ON DELETE CASCADE,
 
 FOREIGN KEY (exam) REFERENCES Exam (id) 
-ON UPDATE CASCADE ON DELETE CASCADE,
-
-UNIQUE (lecture, exam, questionNo)
-
+ON UPDATE CASCADE ON DELETE CASCADE
 )ENGINE=INNODB;
 
 CREATE TABLE Answer (
@@ -83,7 +97,6 @@ ON UPDATE CASCADE ON DELETE CASCADE,
 
 FOREIGN KEY (student) REFERENCES Person(id)
 ON UPDATE CASCADE ON DELETE CASCADE
-
 )ENGINE=INNODB;
 
 INSERT INTO `GradePrediction`.`Person`
@@ -114,6 +127,24 @@ INSERT INTO `GradePrediction`.`Lecture`
 `semester`)
 VALUES
 (10984, "Analysis of Algorithms I", "2018-09-01");
+
+INSERT INTO `GradePrediction`.`LectureStudent`
+(`student`,
+`lecture`)
+VALUES
+(1, 1);
+
+INSERT INTO `GradePrediction`.`LectureStudent`
+(`lecture`,
+`student`)
+VALUES
+(1, 2);
+
+INSERT INTO `GradePrediction`.`LectureStudent`
+(`lecture`,
+`student`)
+VALUES
+(1, 3);
 
 INSERT INTO `GradePrediction`.`ExamType`
 (`examType`)
