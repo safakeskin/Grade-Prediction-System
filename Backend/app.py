@@ -30,8 +30,8 @@ def GetLectureName(lecture_id):
         resp.status_code = 200
         return resp
     except Exception as e:
-        print(e)
         resp = jsonify({"success": False, "message": e})
+        return resp
 
 @app.route('/exam/<exam_id>', methods=['GET', 'OPTIONS'])
 def GetExamName(exam_id):
@@ -44,8 +44,39 @@ def GetExamName(exam_id):
         resp.status_code = 200
         return resp
     except Exception as e:
-        print(e)
         resp = jsonify({"success": False, "message": e})
+        return resp
+
+@app.route('/lecture/list', methods=['GET', 'OPTIONS'])
+def GetLectureList():
+    try:
+        cursor = db.cursor()
+        query = "SELECT lectureName FROM Lecture"
+        cursor.execute(query)
+        data = cursor.fetchall()
+        # resp = jsonify(data)
+        resp = jsonify({"success": True, "exam": data})
+        resp.status_code = 200
+        return resp
+    except Exception as e:
+        resp = jsonify({"success": False, "message": e})
+        return resp
+
+@app.route('/person/list', methods=['GET', 'OPTIONS'])
+def GetPersonList():
+    try:
+        cursor = db.cursor()
+        query = "SELECT * FROM Person"
+        cursor.execute(query)
+        data = cursor.fetchall()
+        # resp = jsonify(data)
+        resp = jsonify({"success": True, "exam": data})
+        resp.status_code = 200
+        return resp
+    except Exception as e:
+        resp = jsonify({"success": False, "message": e})
+        return resp
+
 
 @app.route('/exam/list', methods=['GET', 'OPTIONS'])
 def GetExamList():
@@ -59,8 +90,8 @@ def GetExamList():
         resp.status_code = 200
         return resp
     except Exception as e:
-        print(e)
         resp = jsonify({"success": False, "message": e})
+        return resp
 
 @app.route('/lecture/exam/<lecture_id>', methods=['GET', 'OPTIONS'])
 def GetLectureExam(lecture_id):
@@ -74,30 +105,29 @@ def GetLectureExam(lecture_id):
         resp.status_code = 200
         return resp
     except Exception as e:
-        print(e)
         resp = jsonify({"success": False, "message": e})
-
+        return resp
 
 @app.route('/question/count/<lecture_id>/<exam_id>', methods=['GET', 'OPTIONS'])
 def QuestionCount(lecture_id, exam_id):
     try:
         cursor = db.cursor()
         query = "SELECT COUNT(*) FROM Question WHERE lecture = %s AND exam = %s"
-        cursor.execute(query, (lecture_id,exam_id))
+        cursor.execute(query, (lecture_id, exam_id))
         data = cursor.fetchall()
         resp = jsonify({"success": True, "count": data[0][0]})
         resp.status_code = 200
         return resp
     except Exception as e:
-        print(e)
         resp = jsonify({"success": False, "message": e})
+        return resp
 
 @app.route('/question/select/<lecture_id>/<exam_id>/<question_no>', methods=['GET', 'OPTIONS'])
 def SelectQuestion(lecture_id, exam_id, question_no):
     try:
         cursor = db.cursor()
         query = "SELECT question FROM Question WHERE lecture = %s AND exam = %s AND questionNo = %s"
-        cursor.execute(query, (lecture_id,exam_id,question_no))
+        cursor.execute(query, (lecture_id, exam_id, question_no))
         data = cursor.fetchall()
         if (data):
             resp = jsonify({"success": True, "question": data[0][0]})
@@ -108,7 +138,53 @@ def SelectQuestion(lecture_id, exam_id, question_no):
             resp.status_code = 200
             return resp
     except Exception as e:
-        print(e)
+        resp = jsonify({"success": False, "message": e})
+        return resp
+
+@app.route('/person/create/<first_name>/<last_name>/<student_id>', methods=['POST', 'OPTIONS'])
+def CreatePerson(first_name, last_name, student_id):
+    try:
+        cursor = db.cursor()
+        query = "INSERT INTO Person (firstName, lastName, studentID) VALUES (%s, %s, %s)"
+        cursor.execute(query, (first_name, last_name, student_id))
+        db.commit()
+        resp = jsonify({'success': True})
+        resp.status_code = 200
+        return resp
+    except Exception as e: 
+        resp = jsonify({"success": False, "message": e})
+        return resp
+
+@app.route('/lecture/create/<crn>/<lecture>/<semester>', methods=['POST', 'OPTIONS'])
+def CreateLecture(crn, lecture, semester):
+    try:
+        cursor = db.cursor()
+        query = "INSERT INTO Lecture (crn, lectureName, semester) VALUES (%s, %s, %s)"
+        cursor.execute(query, (crn, lecture, semester))
+        db.commit()
+        resp = jsonify({'success': True})
+        resp.status_code = 200
+        return resp
+    except Exception as e:
+        resp = jsonify({"success": False, "message": e})
+        return resp
+
+@app.route('/exam/create/<lecture_id>/<exam_type>/<is_active>', methods=['POST', 'OPTIONS'])
+def CreateExam(lecture_id, exam_type, is_active):
+    try:
+        success = HaveThatExam(lecture_id, exam_type)
+        if (not success):
+            cursor = db.cursor()
+            query = "INSERT INTO Exam (lecture, examType, isActive) VALUES (%s, %s, %s)"
+            cursor.execute(query, (lecture_id, exam_type, is_active))
+            db.commit()
+            resp = jsonify({'success': True})
+            resp.status_code = 200
+            return resp
+        else:
+            resp = jsonify({"success": False, "message": "Lecture already have same exam."})
+            return resp
+    except Exception as e:
         resp = jsonify({"success": False, "message": e})
         return resp
 
@@ -117,13 +193,45 @@ def CreateQuestion(lecture_id, exam_id, question_no, question):
     try:
         cursor = db.cursor()
         query = "INSERT INTO Question (lecture, exam, questionNo, question) VALUES (%s, %s, %s, %s)"
-        cursor.execute(query, (lecture_id,exam_id,question_no,question))
+        cursor.execute(query, (lecture_id, exam_id, question_no, question))
         db.commit()
         resp = jsonify({'success': True})
         resp.status_code = 200
         return resp
     except Exception as e:
-        print(e)
+        resp = jsonify({"success": False, "message": e})
+        return resp
+
+@app.route('/lecture/delete/<lecture_id>', methods=['POST', 'OPTIONS'])
+def DeleteLecture(lecture_id):
+    try:
+        cursor = db.cursor()
+        query = "DELETE FROM Lecture WHERE (id = %s)"
+        cursor.execute(query, (lecture_id))
+        db.commit()
+        resp = jsonify({'success': True})
+        resp.status_code = 200
+        return resp
+    except Exception as e:
+        resp = jsonify({"success": False, "message": e})
+        return resp
+
+@app.route('/exam/delete/<lecture_id>/<exam_type>', methods=['POST', 'OPTIONS'])
+def DeleteExam(lecture_id, exam_type):
+    try:
+        success = HaveThatExam(lecture_id, exam_type)
+        if (success):
+            cursor = db.cursor()
+            query = "DELETE FROM Exam WHERE (lecture = %s AND examType = %s)"
+            cursor.execute(query, (lecture_id, exam_type))
+            db.commit()
+            resp = jsonify({'success': True})
+            resp.status_code = 200
+            return resp
+        else:
+            resp = jsonify({"success": False, "message": "Lecture does not have that exam."})
+            return resp
+    except Exception as e:
         resp = jsonify({"success": False, "message": e})
         return resp
 
@@ -131,16 +239,79 @@ def CreateQuestion(lecture_id, exam_id, question_no, question):
 def DeleteQuestion(lecture_id, exam_id, question_no):
     try:
         cursor = db.cursor()
-        query = "DELETE FROM Question  WHERE (lecture = %s AND exam = %s AND questionNo = %s)"
-        cursor.execute(query, (lecture_id,exam_id,question_no))
+        query = "DELETE FROM Question WHERE (lecture = %s AND exam = %s AND questionNo = %s)"
+        cursor.execute(query, (lecture_id, exam_id, question_no))
         db.commit()
         resp = jsonify({'success': True})
         resp.status_code = 200
         return resp
     except Exception as e:
-        print(e)
         resp = jsonify({"success": False, "message": e})
         return resp
 
+@app.route('/student/add/<lecture_id>/<student_id>', methods=['POST', 'OPTIONS'])
+def AddStudent2Lecture(lecture_id, student_id):
+    try:
+        success = isAddedStudent(lecture_id, student_id)
+        if (not success):
+            cursor = db.cursor()
+            query = "INSERT INTO LectureStudent (lecture, student) VALUES (%s, %s)"
+            cursor.execute(query, (lecture_id, student_id))
+            db.commit()
+            resp = jsonify({'success': True})
+            resp.status_code = 200
+            return resp
+        else:
+            resp = jsonify({"success": False, "message": "Student is already added to lecture."})
+            return resp
+    except Exception as e:
+        resp = jsonify({"success": False, "message": e})
+        return resp
+
+@app.route('/student/remove/<lecture_id>/<student_id>', methods=['POST', 'OPTIONS'])
+def RemoveStudentFromLecture(lecture_id, student_id):
+    try:
+        success = isAddedStudent(lecture_id, student_id)
+        if (success):
+            cursor = db.cursor()
+            query = "DELETE FROM LectureStudent WHERE (lecture = %s AND student = %s)"
+            cursor.execute(query, (lecture_id, student_id))
+            db.commit()
+            resp = jsonify({'success': True})
+            resp.status_code = 200
+            return resp
+        else:
+            resp = jsonify({"success": False, "message": "There is no student in the lecture."})
+            return resp
+    except Exception as e:
+        resp = jsonify({"success": False, "message": e})
+        return resp
+
+def HaveThatExam(lecture_id, exam_type):
+    try:
+        cursor = db.cursor()
+        query = "SELECT id FROM Exam WHERE (lecture = %s AND examType = %s)"
+        cursor.execute(query, (lecture_id, exam_type))
+        data = cursor.fetchall()
+        if (data):
+            return True
+        else:
+            return False
+    except:
+        return False
+
+def isAddedStudent(lecture_id, student_id):
+    try:
+        cursor = db.cursor()
+        query = "SELECT id FROM LectureStudent WHERE (lecture = %s AND student = %s)"
+        cursor.execute(query, (lecture_id, student_id))
+        data = cursor.fetchall()
+        if (data):
+            return True
+        else:
+            return False
+    except:
+        return False
+
 if __name__ == '__main__':
-    app.run(debug=True,host=BACKEND_HOST, port=BACKEND_PORT)
+    app.run(debug=True, host=BACKEND_HOST, port=BACKEND_PORT)
