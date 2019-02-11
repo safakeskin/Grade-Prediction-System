@@ -122,6 +122,34 @@ def GetLectureExam(lecture_id):
         resp = jsonify({"success": False, "message": e})
         return resp
 
+@app.route('/answer/<question_id>/<student_id>', methods=['GET', 'OPTIONS'])
+def GetAnswer(question_id, student_id):
+    try:
+        cursor = db.cursor()
+        query = "SELECT content FROM Answer WHERE (question = %s AND student = %s)"
+        cursor.execute(query, (question_id, student_id))
+        data = cursor.fetchall()
+        resp = jsonify({"success": True, "answer": data})
+        resp.status_code = 200
+        return resp
+    except Exception as e:
+        resp = jsonify({"success": False, "message": e})
+        return resp
+
+@app.route('/answer/list', methods=['GET', 'OPTIONS'])
+def GetAnswerList():
+    try:
+        cursor = db.cursor()
+        query = "SELECT * FROM Answer"
+        cursor.execute(query)
+        data = cursor.fetchall()
+        resp = jsonify({"success": True, "answer": data})
+        resp.status_code = 200
+        return resp
+    except Exception as e:
+        resp = jsonify({"success": False, "message": e})
+        return resp
+
 @app.route('/question/count/<lecture_id>/<exam_id>', methods=['GET', 'OPTIONS'])
 def QuestionCount(lecture_id, exam_id):
     try:
@@ -210,7 +238,7 @@ def SubmitAnswer(question_id, student_id, content):
             query = "UPDATE Answer SET content = %s WHERE id = %s"
             cursor.execute(query, (content, q_id))
             db.commit()
-            resp = jsonify({'success': True})
+            resp = jsonify({'success': True, "message": "Answer is updated."})
             resp.status_code = 200
             return resp
     except Exception as e: 
@@ -447,5 +475,7 @@ def ExistAnswer(question_id, student_id):
             return False, 0
     except:
         return False, 0
+
+        
 if __name__ == '__main__':
     app.run(debug=True, host=BACKEND_HOST, port=BACKEND_PORT)

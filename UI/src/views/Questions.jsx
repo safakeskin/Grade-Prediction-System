@@ -147,7 +147,24 @@ class Question extends React.Component {
 	}
 
 	SubmitAnswer() {
-
+		console.log(this.state);
+		const question_id = this.state.question_id || 2;
+		const student_id = this.state.student_id || 1;
+		const content = this.state.content || "hfdkjhkdsfjlsj";
+		fetch(BACKEND_HOST + "/answer/submit/" + question_id + "/" + student_id + "/" + content, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+		}).then((response) => response.json()
+		).then(data => {
+            if (data.success) {
+				console.log("sdkjashk");
+			}
+			else {
+                console.log("Error (SubmitAnswer)", data.message)
+            }
+        }).catch(err => {
+            console.log(String(err));
+        });
 	}
 
 	ChangeQuestion(num) {
@@ -162,6 +179,10 @@ class Question extends React.Component {
 			this.SelectQuestion(lecture, exam, qNo);
 			this.setState({questionNumber: qNo});
 		}
+	}
+
+	handleInput = (event) => {
+		console.log(event);
 	}
 
 	render() {
@@ -199,6 +220,10 @@ class Question extends React.Component {
 											id="first-name"
 											formControlProps={{
 												fullWidth: true
+											}}
+											inputProps= {{
+												onChange: this.handleInput
+												
 											}}
 										/>
 									</GridItem>
