@@ -21,23 +21,30 @@ class DataCleaner:
     def display_np_array(np_array):
         for i, row in enumerate(np_array):
             print(i, row)
+    
+    @staticmethod
+    def load_np_array_from_txt(f_name):
+        return np.loadtxt(f_name)
 
 if __name__ == "__main__":
     try:
         import sys
         f_path = "../DataSet/tripadvisor_review.csv"
         t_path = "../Clustering/ExampleTexts/"
-        if len(sys.argv) == 2 or len(sys.argv) > 3:
-            raise ValueError("Zero or Two parameters should be given.")
-        if len(sys.argv) == 3:
+        if len(sys.argv) > 3:
+            raise ValueError("Zero, One or Two parameters should be given.")
+        if len(sys.argv) == 1 or len(sys.argv) == 3:
             f_path = sys.argv[1]
             t_path = sys.argv[2]
         
-        f_name = f_path.strip().split("/")[-1].split(".")[0]
-        t_name = t_path + f_name + ".txt"
+            f_name = f_path.strip().split("/")[-1].split(".")[0]
+            t_name = t_path + f_name + ".txt"
 
-        data = DataCleaner.read_concat_csv(f_path)
-        DataCleaner.write_np_array_to_txt( data , t_name )
+            data = DataCleaner.read_concat_csv(f_path)
+            DataCleaner.write_np_array_to_txt( data , t_name )
+        elif len(sys.argv) == 2:
+            f_path = sys.argv[1]
+            print( DataCleaner.load_np_array_from_txt(f_path) )
     except ValueError as ve:
         print(repr(ve))
     except Exception as e:
