@@ -9,7 +9,7 @@ class DataCleaner:
         # n_size = f_data.shape
         c_data = []
         for row in f_data[:, (col_pass_ctr if col_pass_ctr is not None else 1 ) :]:
-            c_data.append(ftls.reduce(lambda x,y: x+y, row))
+            c_data.append(ftls.reduce(lambda x,y: x+ " " +y, row))
         
         return np.array(c_data)
     
