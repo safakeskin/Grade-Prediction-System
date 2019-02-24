@@ -44,7 +44,7 @@ if __name__ == "__main__":
             DataCleaner.write_np_array_to_txt( data , t_name )
         elif len(sys.argv) == 2:
             f_path = sys.argv[1]
-            print( DataCleaner.load_np_array_from_txt(f_path).shape )
+            print( DataCleaner.load_np_array_from_txt(f_path) )
     except ValueError as ve:
         print(repr(ve))
     except Exception as e:
