@@ -4,17 +4,17 @@ from termcolor import colored
 class Levenshtein:
     def __init__(self, str1=None, str2=None):
         if(str1 == None or str2 == None):
-            #            print(colored("\n\nLevenshtein object is initialized without parameters." +
-            #            " Use run method with 2 given strings in order to run Levenshtein " +
-            #            "Distance algorithm with supplied parameters.", "yellow") )
+            # print(colored("\n\nLevenshtein object is initialized without parameters." +
+            # " Use run method with 2 given strings in order to run Levenshtein " +
+            # "Distance algorithm with supplied parameters.", "yellow") )
             self.str1 = self.str2 = None
             return
-#        print( colored("\n\nLevenshtein object will be initialized with given texts " +
-#        "and Levenshtein Distance of texts will be printed in console.", "yellow"))
+        # print( colored("\n\nLevenshtein object will be initialized with given texts " +
+        # "and Levenshtein Distance of texts will be printed in console.", "yellow"))
         self.str1 = str1
         self.str2 = str2
-#        lev_dist = self.levenshteinDistance(str1, str2)
-#        print(lev_dist)
+        # lev_dist = self.levenshteinDistance(str1, str2)
+#       # print(lev_dist)
 
     def run(self, str1=None, str2=None):
         try:
@@ -22,14 +22,14 @@ class Levenshtein:
                 if(self.str1 == None or self.str2 == None):
                     raise ValueError(
                         "Neither parameters are provided correctly nor object is not initialized with texts.")
-#                print(colored("\n\nLevenshtein Distance of the texts that are given while initializing will "
-#                + "be printed in console and also will be returned.", "yellow"))
+                # print(colored("\n\nLevenshtein Distance of the texts that are given while initializing will "
+                # + "be printed in console and also will be returned.", "yellow"))
                 lev_dist = self.levenshteinDistance(self.str1, self.str2)
-#                print(lev_dist)
+                # print(lev_dist)
                 return lev_dist
-#            print(colored("\n\nLevenshtein Distance of given texts will be printed in console and also will be returned.", "yellow"))
+            # print(colored("\n\nLevenshtein Distance of given texts will be printed in console and also will be returned.", "yellow"))
             lev_dist = self.levenshteinDistance(str1, str2)
-#            print(lev_dist)
+            # print(lev_dist)
             return lev_dist
         except ValueError as err:
             print(colored("\n\nError: " + repr(err), "red"))
@@ -72,7 +72,6 @@ if __name__ == "__main__":
     lev1 = Levenshtein("kitten", "sitting")
     # lev2 = Levenshtein("rosettacode", "raisethysword")
     print(lev1.run())
-    print("ATATAT\n\n\n\n")
     # hypothesis = tf.SparseTensor(
     #     [[0, 0, 0],
     #     [1, 0, 0]],
@@ -91,6 +90,7 @@ if __name__ == "__main__":
     truth = tf.SparseTensor([[0,0,x] for x in range(len(trt))], [t for t in trt], [1,1,len(trt)])
     normalize = True
     output = tf.edit_distance(hypothesis, truth, normalize=normalize)
+    print("Hello! \n\n\n")
     sth = tf.Variable(output)
     init_op = tf.initialize_all_variables()
     with tf.Session() as sess:
