@@ -11,6 +11,10 @@ class NeedleWunsch:
             print( colored("NeedlemanWunsch (NW) object is empty initialized. Strings need to be provided \
                 with \"setStrings\" method before object will be used.", "yellow"))
     
+    def __str__(self):
+        import numpy as np
+        return np.array2string(self.printTable(), formatter={"object": lambda x: str(x) + "\t"})
+
     def setStrings(self, str1, str2):
         from termcolor import colored
         self.str1 = str1
@@ -38,11 +42,8 @@ class NeedleWunsch:
     def printTable(self):
         import numpy as np
         table_header = np.array(list(" " + self.str2), dtype=object).reshape((1,self.table.shape[1]))
-        print(table_header.shape, table_header.dtype)
         table = self.table.astype(object)
         concatenated = np.concatenate( (table_header,table) )
         table_left_header = np.array(list("  " + self.str1), dtype=object).reshape((concatenated.shape[0],1))
-        print(table_left_header.shape)
-        print(concatenated.shape)
         concatenated = np.concatenate( (table_left_header,concatenated), axis=1 )
-        print(concatenated)
+        return concatenated

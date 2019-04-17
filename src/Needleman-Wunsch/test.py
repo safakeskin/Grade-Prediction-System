@@ -1,4 +1,4 @@
 from NeedleWunsch import NeedleWunsch as NW
-
+from termcolor import colored
 nw = NW("GCATG-CU", "G-ATTACA")
-nw.printTable()
+print(colored(nw, "blue"))
