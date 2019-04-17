@@ -13,7 +13,7 @@ class NeedleWunsch:
     
     def __str__(self):
         import numpy as np
-        return np.array2string(self.printTable(), formatter={"object": lambda x: str(x) + "\t"})
+        return np.array2string(self.getPrintableTable(), formatter={"object": lambda x: str(x) + "\t"})
 
     def setStrings(self, str1, str2):
         from termcolor import colored
@@ -39,7 +39,7 @@ class NeedleWunsch:
         except Exception as e:
             print(e)
     
-    def printTable(self):
+    def getPrintableTable(self):
         import numpy as np
         table_header = np.array(list(" " + self.str2), dtype=object).reshape((1,self.table.shape[1]))
         table = self.table.astype(object)
@@ -47,3 +47,24 @@ class NeedleWunsch:
         table_left_header = np.array(list("  " + self.str1), dtype=object).reshape((concatenated.shape[0],1))
         concatenated = np.concatenate( (table_left_header,concatenated), axis=1 )
         return concatenated
+    
+    def run(self):
+        try:
+            if self.table is None:
+                raise ValueError("Table not initialized with strings.")
+            str1, str2 = self.str1, self.str2
+            for col_index in range(1, len(str2) + 1):
+                self.table[0, col_index] = self.table[0, col_index-1] - 1
+            for row_index in range(1, len(str1) + 1):
+                self.table[row_index, 0] = self.table[row_index-1, 0] - 1
+
+            for row_index in range(1,len(str1) + 1):
+                for col_index in range(1, len(str2) + 1):
+                    left = self.table[row_index, col_index-1]
+                    up   = self.table[row_index-1, col_index]
+                    diagonal = self.table[row_index-1, col_index-1]
+                    match = 1 if str1[row_index-1] == str2[col_index-1] else -1
+                    self.table[row_index,col_index] = match + max([left,up,diagonal])
+                    
+        except Exception as e:
+            print(e)
