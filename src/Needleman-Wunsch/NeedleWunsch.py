@@ -1,14 +1,21 @@
 class NeedleWunsch:
-    def __init__(self, str1=None, str2=None):
+    def __init__(self, str1=None, str2=None, miss_point=None):
         from termcolor import colored
+        if type(miss_point) == int:
+            print(colored("SmithWaterman (SW) object will be initialized.", "yellow"))
+            self.miss = miss_point
+        else:
+            print(colored("NeedlemanWunsch (NW) object will be initialized.", "yellow"))
+            self.miss = -1
+
         if str1 is not None and str2 is not None:
             self.str1, self.str2 = str1, str2
-            print(colored("NeedlemanWunsch (NW) object will be initialized with given texts.", "yellow"))
+            print(colored("(SW or NW) object will be initialized with given texts.", "yellow"))
             self.initTable()
-            print(colored("NeedlemanWunsch (NW) object is initialized with given texts.", "yellow"))
+            print(colored("(SW or NW) object is initialized with given texts.", "yellow"))
         else:
             self.str1 = self.str2 = self.table = None
-            print( colored("NeedlemanWunsch (NW) object is empty initialized. Strings need to be provided \
+            print( colored("(SW or NW) object is empty initialized. Strings need to be provided \
                 with \"setStrings\" method before object will be used.", "yellow"))
     
     def __str__(self):
@@ -63,8 +70,11 @@ class NeedleWunsch:
                     left = self.table[row_index, col_index-1]
                     up   = self.table[row_index-1, col_index]
                     diagonal = self.table[row_index-1, col_index-1]
-                    match = 1 if str1[row_index-1] == str2[col_index-1] else -1
-                    self.table[row_index,col_index] = match + max([left,up,diagonal])
+                    
+                    top_score  = self.miss + up
+                    left_score = self.miss + left
+                    diagonal_score = diagonal + (1 if str1[row_index-1] == str2[col_index -1] else self.miss)
+                    self.table[row_index,col_index] = max([top_score, left_score, diagonal_score])
                     
         except Exception as e:
             print(e)
