@@ -25,12 +25,12 @@ class TextDistance:
 
     @classmethod
     def run(cls, model_name, str1, str2):
-        func = cls.models[model_name](str1, str2)
-        func_distance   = cls.models[model_name].distance(str1, str2)
-        func_similarity = cls.models[model_name].similarity(str1, str2)
-        func_norm_dist  = cls.models[model_name].normalized_distance(str1, str2)
+        # func = cls.models[model_name](str1, str2)
+        # func_distance   = cls.models[model_name].distance(str1, str2)
+        # func_similarity = cls.models[model_name].similarity(str1, str2)
+        # func_norm_dist  = cls.models[model_name].normalized_distance(str1, str2)
         func_norm_sim   = cls.models[model_name].normalized_similarity(str1, str2)
-        return func, func_distance, func_similarity, func_norm_dist, func_norm_sim
+        return 0, 0, 0, 0, func_norm_sim
     
     @staticmethod
     def constructAnswerDict(results, index):
@@ -53,26 +53,26 @@ class TextDistance:
         columns = ["str1", "str2"] + model_names
         ref = truth
 
-        normalized_distance     = pd.DataFrame(columns=columns)
+        # normalized_distance     = pd.DataFrame(columns=columns)
         normalized_similarity   = pd.DataFrame(columns=columns)
-        similarity              = pd.DataFrame(columns=columns)
-        distance                = pd.DataFrame(columns=columns)
-        model                   = pd.DataFrame(columns=columns)
+        # similarity              = pd.DataFrame(columns=columns)
+        # distance                = pd.DataFrame(columns=columns)
+        # model                   = pd.DataFrame(columns=columns)
 
         for answer in answers:
             results = {}
             for model_name in model_names:
                 results[model_name] = cls.run(model_name, answer, ref)
 
-            model_dict      = cls.getAppendDict(answer,ref, cls.constructAnswerDict(results,0))
-            dist_dict       = cls.getAppendDict(answer,ref, cls.constructAnswerDict(results,1))
-            sim_dict        = cls.getAppendDict(answer,ref, cls.constructAnswerDict(results,2))
-            norm_dist_dict  = cls.getAppendDict(answer,ref, cls.constructAnswerDict(results,3))
+            # model_dict      = cls.getAppendDict(answer,ref, cls.constructAnswerDict(results,0))
+            # dist_dict       = cls.getAppendDict(answer,ref, cls.constructAnswerDict(results,1))
+            # sim_dict        = cls.getAppendDict(answer,ref, cls.constructAnswerDict(results,2))
+            # norm_dist_dict  = cls.getAppendDict(answer,ref, cls.constructAnswerDict(results,3))
             norm_sim_dict   = cls.getAppendDict(answer,ref, cls.constructAnswerDict(results,4))
 
-            model                   = model.append(model_dict, ignore_index=True)
-            distance                = distance.append(dist_dict, ignore_index=True)
-            similarity              = similarity.append(sim_dict, ignore_index=True)
-            normalized_distance     = normalized_distance.append(norm_dist_dict, ignore_index=True)
+            # model                   = model.append(model_dict, ignore_index=True)
+            # distance                = distance.append(dist_dict, ignore_index=True)
+            # similarity              = similarity.append(sim_dict, ignore_index=True)
+            # normalized_distance     = normalized_distance.append(norm_dist_dict, ignore_index=True)
             normalized_similarity   = normalized_similarity.append(norm_sim_dict, ignore_index=True)
         return normalized_similarity
